@@ -32,11 +32,11 @@ algo = TRPO(
 
 run_experiment_lite(
     algo.train(),
-    # Number of parallel workers for sampling
+    # Number of parallel workers for sampling平行取样工人人数
     n_parallel=1,
-    # Only keep the snapshot parameters for the last iteration
+    # Only keep the snapshot parameters for the last iteration只保留最后一次迭代的快照参数
     snapshot_mode="last",
-    # Specifies the seed for the experiment. If this is not provided, a random seed
+    # Specifies the seed for the experiment. If this is not provided, a random seed指定实验的种子。如果没有提供，则使用随机种子
     # will be used
     seed=1,
     # plot=True,
