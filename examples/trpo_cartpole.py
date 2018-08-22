@@ -8,7 +8,7 @@ env = normalize(CartpoleEnv())
 
 policy = GaussianMLPPolicy(
     env_spec=env.spec,
-    # The neural network policy should have two hidden layers, each with 32 hidden units.
+    # 神经网络策略应该有两个隐层，每层都有32个隐藏单元。
     hidden_sizes=(32, 32)
 )
 
