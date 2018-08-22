@@ -11,7 +11,7 @@ env = normalize(CartpoleEnv())
 
 policy = GaussianMLPPolicy(
     env_spec=env.spec,
-    # The neural network policy should have two hidden layers, each with 32 hidden units.
+    # 神经网络策略应该有两个隐层，每层都有32个隐藏单元。
     hidden_sizes=(32, 32)
 )
 
@@ -27,7 +27,7 @@ algo = TRPO(
     discount=0.99,
     step_size=0.01,
     # Uncomment both lines (this and the plot parameter below) to enable plotting
-    # plot=True,
+    # plot=True,取消注释两行(此参数和下面的绘图参数)，以启用绘图=True，
 )
 
 run_experiment_lite(
