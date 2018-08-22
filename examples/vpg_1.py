@@ -7,8 +7,7 @@ import theano
 import theano.tensor as TT
 from lasagne.updates import adam
 
-# normalize() makes sure that the actions for the environment lies
-# within the range [-1, 1] (only works for environments with continuous actions)确保环境的操作在[-1，1]范围内(仅适用于具有连续操作的环境)
+# normalize() 确保环境的操作在[-1，1]范围内(仅适用于具有连续操作的环境)
 env = normalize(CartpoleEnv())
 # 用8个隐藏单元的单隐层初始化一个神经网络策略
 policy = GaussianMLPPolicy(env.spec, hidden_sizes=(8,))
