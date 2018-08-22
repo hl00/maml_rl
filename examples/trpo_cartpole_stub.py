@@ -30,6 +30,9 @@ algo = TRPO(
     # plot=True,取消注释两行(此参数和下面的绘图参数)，以启用绘图=True，
 )
 
+
+#支持多种执行方式，本地式，在一个 docker 容器本地式，或者在 ec2 远程。
+#按照这样的抽象，不同超参数的多个试验可以被快速构造并在多个 ec2 的机器上同时执行。
 run_experiment_lite(
     algo.train(),
     # Number of parallel workers for sampling平行取样工人人数
