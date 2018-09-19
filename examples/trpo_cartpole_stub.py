@@ -11,7 +11,7 @@ env = normalize(CartpoleEnv())
 
 policy = GaussianMLPPolicy(
     env_spec=env.spec,
-    # The neural network policy should have two hidden layers, each with 32 hidden units.
+    # 神经网络策略应该有两个隐层，每层都有32个隐藏单元。
     hidden_sizes=(32, 32)
 )
 
@@ -27,17 +27,20 @@ algo = TRPO(
     discount=0.99,
     step_size=0.01,
     # Uncomment both lines (this and the plot parameter below) to enable plotting
-    # plot=True,
+    # plot=True,取消注释两行(此参数和下面的绘图参数)，以启用绘图=True，
 )
 
+
+#支持多种执行方式，本地式，在一个 docker 容器本地式，或者在 ec2 远程。
+#按照这样的抽象，不同超参数的多个试验可以被快速构造并在多个 ec2 的机器上同时执行。
 run_experiment_lite(
     algo.train(),
-    # Number of parallel workers for sampling
+    # Number of parallel workers for sampling平行取样工人人数
     n_parallel=1,
-    # Only keep the snapshot parameters for the last iteration
+    # Only keep the snapshot parameters for the last iteration只保留最后一次迭代的快照参数
     snapshot_mode="last",
-    # Specifies the seed for the experiment. If this is not provided, a random seed
+    # Specifies the seed for the experiment. If this is not provided, a random seed指定实验的种子。如果没有提供，则使用随机种子
     # will be used
     seed=1,
-    # plot=True,
+    plot=True,
 )

@@ -1,4 +1,5 @@
-from .env_spec import EnvSpec
+
+from rllab.envs.env_spec import EnvSpec
 import collections
 
 
@@ -18,6 +19,7 @@ class Env(object):
         done : a boolean, indicating whether the episode has ended
         info : a dictionary containing other diagnostic information from the previous action
         """
+        #运行环境动态的一个时间步骤。到达插曲结束时，应该调用Reset()来重置环境的内部状态。
         raise NotImplementedError
 
     def reset(self, reset_args=None):

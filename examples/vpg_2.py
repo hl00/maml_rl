@@ -13,7 +13,7 @@ from lasagne.updates import adam
 env = normalize(CartpoleEnv())
 # Initialize a neural network policy with a single hidden layer of 8 hidden units
 policy = GaussianMLPPolicy(env.spec, hidden_sizes=(8,))
-# Initialize a linear baseline estimator using default hand-crafted features
+# #使用默认手工设置的特征，初始化线性基线估计器
 baseline = LinearFeatureBaseline(env.spec)
 
 # We will collect 100 trajectories per iteration
@@ -43,7 +43,7 @@ actions_var = env.action_space.new_tensor_variable(
     'actions',
     extra_dims=1
 )
-advantages_var = TT.vector('advantages')
+advantages_var = TT.vector('advantages')##
 
 # policy.dist_info_sym returns a dictionary, whose values are symbolic expressions for quantities related to the
 # distribution of the actions. For a Gaussian policy, it contains the mean and (log) standard deviation.
@@ -56,7 +56,7 @@ dist_info_vars = policy.dist_info_sym(observations_var)
 dist = policy.distribution
 
 # Note that we negate the objective, since most optimizers assume a
-# minimization problem
+# #minimization problem
 surr = - TT.mean(dist.log_likelihood_sym(actions_var, dist_info_vars) * advantages_var)
 
 # Get the list of trainable parameters.
@@ -100,7 +100,7 @@ for _ in range(n_itr):
                 break
 
         # We need to compute the empirical return for each time step along the
-        # trajectory
+        # #trajectory
         path = dict(
             observations=np.array(observations),
             actions=np.array(actions),

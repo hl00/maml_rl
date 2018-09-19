@@ -88,15 +88,14 @@ for v in variants:
         algo.train(),
         exp_prefix=exp_prefix,
         exp_name=exp_name,
-        # Number of parallel workers for sampling
+        # Number of parallel workers for sampling平行取样工人人数
         n_parallel=1,
-        # Only keep the snapshot parameters for the last iteration
+        # Only keep the snapshot parameters for the last iteration只保留上次迭代的快照参数。
         #snapshot_mode="last",
         snapshot_mode="gap",
         snapshot_gap=25,
         sync_s3_pkl=True,
-        # Specifies the seed for the experiment. If this is not provided, a random seed
-        # will be used
+        # 指定实验的种子seed。如果没有提供，则使用随机种子
         seed=v["seed"],
         mode="local",
         #mode="ec2",

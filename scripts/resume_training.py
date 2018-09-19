@@ -3,7 +3,7 @@
 
 from rllab.sampler.utils import rollout
 from rllab.algos.batch_polopt import BatchPolopt
-import argparse
+import argparse     #argparse是一个命令解析器
 import joblib
 import uuid
 import os
@@ -13,16 +13,15 @@ import json
 import subprocess
 from rllab.misc import logger
 from rllab.misc.instrument import to_local_command
-
-filename = str(uuid.uuid4())
+filename = str(uuid.uuid4()) #uuid.uuid4() : 基于随机数生成uuid;str() 函数返回一个对象的string格式
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()    #创建一个命令解析器的句柄
     parser.add_argument('file', type=str,
-                        help='path to the snapshot file')
+                        help='path to the snapshot file')     #add_argument:读入命令行参数，该调用有多个参数
     parser.add_argument('--log_dir', type=str, default=None,
-                        help='path to the new log directory')
+                        help='path to the new log directory')   #对于函数add_argumen()第一个是选项，第二个是数据类型，第三个默认值，第四个是help命令时的说明
     # Look for params.json file
     args = parser.parse_args()
     parent_dir = os.path.dirname(os.path.realpath(args.file))

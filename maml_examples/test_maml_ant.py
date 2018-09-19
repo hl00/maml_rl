@@ -21,8 +21,8 @@ file1 = 'data/s3/posticml-trpo-maml-ant200/maml1_fbs20_mbs40_flr_0.1_mlr0.01/itr
 file2 = 'data/s3/posticml-trpo-maml-ant200/randenv100traj/itr_575.pkl'
 file3 = 'data/s3/posticml-trpo-maml-ant200/oracleenv100traj/itr_550.pkl'
 
-make_video = False  # generate results if False, run code to make video if True
-run_id = 1  # for if you want to run this script in multiple terminals (need to have different ids for each run)
+make_video = False  # 生成结果(如果为false)，运行代码以生成视频(如果为真)
+run_id = 1  # 如果您想在多个终端中运行此脚本(每次运行需要有不同的ID)
 
 if not make_video:
     test_num_goals = 40

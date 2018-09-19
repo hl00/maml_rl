@@ -7,7 +7,7 @@ class TRPO(NPO):
     """
     Trust Region Policy Optimization
     """
-
+ #信任区域策略优化
     def __init__(
             self,
             optimizer=None,
