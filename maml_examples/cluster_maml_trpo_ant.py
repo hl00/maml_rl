@@ -12,7 +12,7 @@ from sandbox.rocky.tf.envs.base import TfEnv
 import tensorflow as tf
 
 stub(globals())
-
+run_id = 1
 from rllab.misc.instrument import VariantGenerator, variant
 
 
@@ -28,7 +28,7 @@ class VG(VariantGenerator):
 
     @variant
     def fast_batch_size(self):
-        return [20]
+        return [20]    #10, 20, 40
 
     @variant
     def meta_batch_size(self):
@@ -41,14 +41,14 @@ class VG(VariantGenerator):
     @variant
     def task_var(self):  # fwd/bwd task or goal vel task
         # 0 for fwd/bwd, 1 for goal vel (kind of), 2 for goal pose
-        return [2]
+        return [0]
 
 
 # should also code up alternative KL thing
 
 variants = VG().variants()
 
-max_path_length = 200
+max_path_length =200
 num_grad_updates = 1
 use_maml=True
 
@@ -81,10 +81,10 @@ for v in variants:
         max_path_length=max_path_length,
         meta_batch_size=v['meta_batch_size'],
         num_grad_updates=num_grad_updates,
-        n_itr=800,
+        n_itr=40,
         use_maml=use_maml,
         step_size=v['meta_step_size'],
-        plot=False,
+        plot=True,
     )
 
     run_experiment_lite(
@@ -100,9 +100,8 @@ for v in variants:
         # Specifies the seed for the experiment. If this is not provided, a random seed
         # will be used
         seed=v["seed"],
-        mode="local",
-        #mode="ec2",
+        mode="local", #mode="ec2",
         variant=v,
-        # plot=True,
+        plot=True,
         # terminate_machine=False,
     )

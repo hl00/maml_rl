@@ -11,7 +11,8 @@ from rllab.misc.overrides import overrides
 def smooth_abs(x, param):
     return np.sqrt(np.square(x) + np.square(param)) - param
 
-
+#goal-direaction
+#cheetah-direc-rand
 class HalfCheetahEnvRandDirec(MujocoEnv, Serializable):
 
     FILE = 'half_cheetah.xml'

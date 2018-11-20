@@ -11,6 +11,7 @@ class PenaltyLbfgsOptimizer(Serializable):
     """
     Performs constrained optimization via penalized L-BFGS. The penalty term is adaptively adjusted to make sure that
     the constraint is satisfied.
+    通过惩罚的L-BFGS执行约束优化。 自适应地调整惩罚项以确保满足约束。
     """
 
     def __init__(
@@ -117,7 +118,7 @@ class PenaltyLbfgsOptimizer(Serializable):
                        (try_penalty, try_loss, self._constraint_name, try_constraint_val))
 
             # Either constraint satisfied, or we are at the last iteration already and no alternative parameter
-            # satisfies the constraint
+            # satisfies the constraint要么约束满足，要么我们已经在最后一次迭代，没有替代参数满足约束
             if try_constraint_val < self._max_constraint_val or \
                     (penalty_itr == self._max_penalty_itr - 1 and opt_params is None):
                 opt_params = itr_opt_params
@@ -126,8 +127,10 @@ class PenaltyLbfgsOptimizer(Serializable):
                 break
 
             # Decide scale factor on the first iteration, or if constraint violation yields numerical error
+            # 在第一次迭代时确定比例因子，或者如果约束违规产生数值误差
             if penalty_scale_factor is None or np.isnan(try_constraint_val):
                 # Increase penalty if constraint violated, or if constraint term is NAN
+                # 如果违反约束，或者约束条件为NAN，则增加惩罚
                 if try_constraint_val > self._max_constraint_val or np.isnan(try_constraint_val):
                     penalty_scale_factor = self._increase_penalty_factor
                 else:

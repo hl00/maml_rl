@@ -1,4 +1,4 @@
-import numpy as np
+-------------------------------------------------------------------import numpy as np
 import sandbox.rocky.tf.core.layers as L
 import tensorflow as tf
 from sandbox.rocky.tf.core.layers_powered import LayersPowered

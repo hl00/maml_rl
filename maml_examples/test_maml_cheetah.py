@@ -15,9 +15,9 @@ import numpy as np
 import pickle
 import tensorflow as tf
 
-file1 = 'data/s3/bugfix-trpo-maml-cheetah200/maml1_fbs10_mbs40_flr_0.1_mlr0.01/itr_475.pkl'
-file2 = 'data/s3/bugfix-trpo-maml-cheetah200/randenv/itr_475.pkl'
-file3 = 'data/s3/bugfix-trpo-maml-cheetah200/oracleenv/itr_975.pkl'
+file1 = 'data/local/trpo-maml-cheetah200/maml1_fbs20_mbs40_flr_0.1_mlr0.01/itr_475.pkl'
+file2 = 'data/local/trpo-maml-cheetah200/randenv/itr_475.pkl'
+file3 = 'data/local/trpo-maml-cheetah200/oracleenv/itr_975.pkl'
 
 make_video = False  # generate results if False, run code to make video if True
 run_id = 1  # for if you want to run this script in multiple terminals (need to have different ids)

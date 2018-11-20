@@ -17,11 +17,11 @@ import tensorflow as tf
 
 stub(globals())
 
-file1 = 'data/s3/posticml-trpo-maml-ant200/maml1_fbs20_mbs40_flr_0.1_mlr0.01/itr_375.pkl'
+file1 = 'local/posticml-trpo-maml-ant200/maml1_fbs20_mbs40_flr_0.1_mlr0.01/itr_375.pkl'
 file2 = 'data/s3/posticml-trpo-maml-ant200/randenv100traj/itr_575.pkl'
 file3 = 'data/s3/posticml-trpo-maml-ant200/oracleenv100traj/itr_550.pkl'
 
-make_video = False  # 生成结果(如果为false)，运行代码以生成视频(如果为真)
+make_video = True  # 生成结果(如果为false)，运行代码以生成视频(如果为真)
 run_id = 1  # 如果您想在多个终端中运行此脚本(每次运行需要有不同的ID)
 
 if not make_video:

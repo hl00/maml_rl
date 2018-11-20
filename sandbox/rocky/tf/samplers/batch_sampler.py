@@ -45,11 +45,12 @@ class BatchSampler(BaseSampler):
         start = time.time()
         if type(reset_args) != list and type(reset_args)!=np.ndarray:
             reset_args = [reset_args]*self.n_envs
-        if self.algo.policy.all_param_vals:
+        if self.algo.policy.all_param_vals:   #BUG
             cur_policy_params = [flatten_tensors(x.values()) for x in self.algo.policy.all_param_vals]
         else:
             cur_policy_params = [cur_policy_params]*self.n_envs
         # do tasks sequentially and parallelize within rollouts per task.
+        # 按顺序执行任务并在每个任务的卷展栏中并行化。
         paths = {}
         for i in range(self.n_envs):
             paths[i] = parallel_sampler.sample_paths(

@@ -194,7 +194,8 @@ class GaussianMLPPolicy(StochasticPolicy, Serializable):
         if tags.get('trainable', False):
             params = tf.trainable_variables()
         else:
-            params = tf.all_variables()
+           # params = tf.all_variables()333333333333333333333333333
+           params = tf.global_variables()
 
         # TODO - this is hacky...
         params = [p for p in params if p.name.startswith('mean_network') or p.name.startswith('output_std_param')]

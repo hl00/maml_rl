@@ -44,7 +44,7 @@ for v in variants:
         discount=0.99,
         step_size=v["step_size"],
         # Uncomment both lines (this and the plot parameter below) to enable plotting
-        # plot=True,
+        plot=True,
     )
 
     run_experiment_lite(
@@ -58,8 +58,8 @@ for v in variants:
         # will be used
         seed=v["seed"],
         # mode="local",
-        mode="ec2",
+        mode="local",
         variant=v,
-        # plot=True,
+        plot=True,
         # terminate_machine=False,
     )

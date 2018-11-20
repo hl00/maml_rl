@@ -24,7 +24,7 @@ load_params = True
 
 
 
-class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
+class REPTILEGaussianMLPPolicy(StochasticPolicy, Serializable):
     def __init__(
             self,
             name,
@@ -58,7 +58,7 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
         :param hidden_nonlinearity: nonlinearity used for each hidden layer
         :param output_nonlinearity: nonlinearity for the output layer
         :param mean_network: custom network for the output mean
-        :param std_network: custom network for the output log std输出日志标准的自定义网络
+        :param std_network: custom network for the output log std
         :param std_parametrization: how the std should be parametrized. There are a few options:
             - exp: the logarithm of the std will be stored, and applied a exponential transformation
             - softplus: the std will be computed as log(1+exp(x))
@@ -136,13 +136,13 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
 
             self._cached_params = {}
 
-            super(MAMLGaussianMLPPolicy, self).__init__(env_spec)
+            super(REPTILEGaussianMLPPolicy, self).__init__(env_spec)
 
             dist_info_sym = self.dist_info_sym(self.input_tensor, dict(), is_training=False)
             mean_var = dist_info_sym["mean"]
             log_std_var = dist_info_sym["log_std"]
 
-            # pre-update policy更新前的政策
+            # pre-update policy
             self._init_f_dist = tensor_utils.compile_function(
                 inputs=[self.input_tensor],
                 outputs=[mean_var, log_std_var],
@@ -155,8 +155,7 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
         return True
 
     def set_init_surr_obj(self, input_list, surr_objs_tensor):
-        """ Set the surrogate objectives used the update the policy
-        设置使用更新策略的代理目标
+        """ Set the surrogate objectives used the update the policy设置使用更新策略的代理目标
         """
         self.input_list_for_grad = input_list
         self.surr_objs = surr_objs_tensor
@@ -184,19 +183,18 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
 
         inputs = obs_list + action_list + adv_list
 
-        # To do a second update, replace self.all_params below with the params that were used to collect the policy.
-        # 要进行第二次更新，请将以下self.all_params替换为用于收集策略的参数。
+        # To do a second update, replace self.all_params below with the params that were used to collect the policy.要进行第二次更新，请将以下self.all_params替换为用于收集策略的参数。
         init_param_values = None
-        if self.all_param_vals is not None: #第二次更新开始
+        if self.all_param_vals is not None:
             init_param_values = self.get_variable_values(self.all_params)
 
         step_size = self.step_size
         for i in range(num_tasks):
-            if self.all_param_vals is not None: #第二次更新开始
+            if self.all_param_vals is not None:
                 self.assign_params(self.all_params, self.all_param_vals[i])
 
         if 'all_fast_params_tensor' not in dir(self):
-            # make computation graph once计算图一次
+            # make computation graph once
             self.all_fast_params_tensor = []
             for i in range(num_tasks):
                 gradients = dict(zip(update_param_keys, tf.gradients(self.surr_objs[i], [self.all_params[key] for key in update_param_keys])))
@@ -206,7 +204,7 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
                 self.all_fast_params_tensor.append(fast_params_tensor)
 
         # pull new param vals out of tensorflow, so gradient computation only done once ## first is the vars, second the values
-        # these are the updated values of the params after the gradient step这些是梯度步骤后参数的更新值
+        # these are the updated values of the params after the gradient step
         self.all_param_vals = sess.run(self.all_fast_params_tensor, feed_dict=dict(list(zip(self.input_list_for_grad, inputs))))
 
         if init_param_values is not None:
@@ -238,7 +236,6 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
     def assign_params(self, tensor_dict, param_values):
         if 'assign_placeholders' not in dir(self):
             # make computation graph, if it doesn't exist; then cache it for future use.
-            # 制作计算图，如果它不存在; 然后缓存它以备将来使用。
             self.assign_placeholders = {}
             self.assign_ops = {}
             for key in tensor_dict.keys():
@@ -251,13 +248,13 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
 
 
     def switch_to_init_dist(self):
-        # switch cur policy distribution to pre-update policy切换策略分配到更新前策略
+        # switch cur policy distribution to pre-update policy
         self._cur_f_dist = self._init_f_dist
         self._cur_f_dist_i = None
         self.all_param_vals = None
 
     def dist_info_sym(self, obs_var, state_info_vars=None, all_params=None, is_training=True):
-        # This function constructs the tf graph, only called during beginning of meta-training此函数构造tf图，仅在元训练开始时调用
+        # This function constructs the tf graph, only called during beginning of meta-training
         # obs_var - observation tensor
         # mean_var - tensor for policy mean
         # std_param_var - tensor for policy std before output
@@ -283,8 +280,6 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
     def updated_dist_info_sym(self, task_id, surr_obj, new_obs_var, params_dict=None, is_training=True):
         """ symbolically create MAML graph, for the meta-optimization, only called at the beginning of meta-training.
         Called more than once if you want to do more than one grad step.
-        象征性地创建MAML图，用于元优化，仅在元训练开始时调用。
-         如果您想要执行多个渐变步骤，则不止一次调用。
         """
         old_params_dict = params_dict
 
@@ -311,25 +306,22 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
     @overrides
     def get_action(self, observation, idx=None):
         # this function takes a numpy array observations and outputs randomly sampled actions.
-        # 此函数采用numpy数组观察并输出随机采样的动作。
-        # idx：与任务/更新策略对应的索引。
+        # idx: index corresponding to the task/updated policy.
         flat_obs = self.observation_space.flatten(observation)
         f_dist = self._cur_f_dist
-
         mean, log_std = [x[0] for x in f_dist([flat_obs])]
-
         rnd = np.random.normal(size=mean.shape)
         action = rnd * np.exp(log_std) + mean
         return action, dict(mean=mean, log_std=log_std)
 
     def get_actions(self, observations):
         # this function takes a numpy array observations and outputs sampled actions.
-        # Assumes that there is one observation per post-update policy distr假设每个更新后的策略发布有一个观察结果
+        # Assumes that there is one observation per post-update policy distr
         flat_obs = self.observation_space.flatten_n(observations)
         result = self._cur_f_dist(flat_obs)
 
         if len(result) == 2:
-            # NOTE - this code assumes that there aren't 2 meta tasks in a batch此代码假定批处理中没有2个元任务
+            # NOTE - this code assumes that there aren't 2 meta tasks in a batch
             means, log_stds = result
         else:
             means = np.array([res[0] for res in result])[:,0,:]
@@ -392,10 +384,8 @@ class MAMLGaussianMLPPolicy(StochasticPolicy, Serializable):
     def forward_MLP(self, name, all_params, input_tensor=None,
                     batch_normalization=False, reuse=True, is_training=False):
         # is_training and reuse are for batch norm, irrelevant if batch_norm set to False
-        # is_training和reuse用于批处理规范，如果batch_norm设置为False则无关紧要
         # set reuse to False if the first time this func is called.
-        # 如果第一次调用此func，则将reuse设置为False。
-        with tf.variable_scope(name):
+        with tf.variable_scope(name):    #生成一个上下文管理器
             if input_tensor is None:
                 l_in = make_input(shape=self.input_shape, input_var=None, name='input')
             else:

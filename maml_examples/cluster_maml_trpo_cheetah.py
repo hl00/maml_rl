@@ -13,7 +13,7 @@ from sandbox.rocky.tf.envs.base import TfEnv
 import tensorflow as tf
 
 stub(globals())
-
+run_id = 2
 from rllab.misc.instrument import VariantGenerator, variant
 
 
@@ -29,7 +29,7 @@ class VG(VariantGenerator):
 
     @variant
     def fast_batch_size(self):
-        return [20]  # #10, 20, 40
+        return [40]  # #10, 20, 40
 
     @variant
     def meta_batch_size(self):
@@ -41,14 +41,13 @@ class VG(VariantGenerator):
 
     @variant
     def direc(self):  # directionenv vs. goal velocity
-        return [False]
-
+        return [True]
 
 # should also code up alternative KL thing
 
 variants = VG().variants()
 
-max_path_length = 200
+max_path_length = 100
 num_grad_updates = 1
 use_maml=True
 
@@ -77,7 +76,7 @@ for v in variants:
         max_path_length=max_path_length,
         meta_batch_size=v['meta_batch_size'],
         num_grad_updates=num_grad_updates,
-        n_itr=800,
+        n_itr=40,
         use_maml=use_maml,
         step_size=v['meta_step_size'],
         plot=False,
@@ -92,7 +91,7 @@ for v in variants:
         n_parallel=8,
         # Only keep the snapshot parameters for the last iteration
         snapshot_mode="gap",
-        snapshot_gap=25,
+        snapshot_gap=25, #每？个一个快照
         sync_s3_pkl=True,
         python_command='python3',
         # Specifies the seed for the experiment. If this is not provided, a random seed
@@ -101,6 +100,6 @@ for v in variants:
         mode="local",
         #mode="ec2",
         variant=v,
-        # plot=True,
+        plot=True,
         # terminate_machine=False,
     )

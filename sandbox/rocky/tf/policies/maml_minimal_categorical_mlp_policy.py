@@ -122,6 +122,7 @@ class MAMLCategoricalMLPPolicy(StochasticPolicy, Serializable):
         self._cur_f_prob = self._init_f_prob
         self.all_param_vals = None
 
+
     def set_init_surr_obj(self, input_list, surr_objs_tensor):
         """ Set the surrogate objectives used the update the policy
         """
@@ -298,7 +299,8 @@ class MAMLCategoricalMLPPolicy(StochasticPolicy, Serializable):
         if tags.get('trainable', False):
             params = tf.trainable_variables()
         else:
-            params = tf.all_variables()
+           # params = tf.all_variables()33333
+           params = tf.global_variables()
 
         # TODO - this is hacky...
         params = [p for p in params if p.name.startswith('prob_network')]

@@ -1,3 +1,4 @@
+# -*- coding:UTF-8 -*-
 from path import Path
 import sys
 import pickle as pickle
@@ -7,12 +8,12 @@ from collections import OrderedDict
 import numpy as np
 import operator
 from functools import reduce
-
+import lasagne
 sys.setrecursionlimit(50000)
 
 
 def extract(x, *keys):
-    if isinstance(x, (dict, lazydict)):
+    if isinstance(x, (dict, lazydict)):   #isinstance() 函数来判断一个对象是否是一个已知的类型,是元组中的一个返回 True
         return tuple(x[k] for k in keys)
     elif isinstance(x, list):
         return tuple([xi[k] for xi in x] for k in keys)
@@ -189,7 +190,7 @@ def set_seed(seed):
     seed %= 4294967294
     global seed_
     seed_ = seed
-    import lasagne
+  #  import lasagne
     random.seed(seed)
     np.random.seed(seed)
     lasagne.random.set_rng(np.random.RandomState(seed))

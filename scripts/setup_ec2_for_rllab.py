@@ -203,7 +203,7 @@ def setup_s3():
         aws_access_key_id=ACCESS_KEY,
         aws_secret_access_key=ACCESS_SECRET,
     )
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     try:
         s3_client.create_bucket(
             ACL='private',
@@ -216,7 +216,7 @@ def setup_s3():
         elif e.response['Error']['Code'] == 'BucketAlreadyOwnedByYou':
             print("Bucket already created by you")
         else:
-            raise e
+            raise
     print("S3 bucket created")
 
 
@@ -254,7 +254,8 @@ def setup_ec2():
 
         ALL_REGION_AWS_SECURITY_GROUP_IDS[region] = [security_group.id]
 
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
+
 
         ec2_client.create_tags(Resources=[security_group.id], Tags=[{'Key': 'Name', 'Value': 'rllab-sg'}])
         try:

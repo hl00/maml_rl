@@ -49,7 +49,8 @@ for fast_learning_rate in fast_learning_rates:
             n_itr=800,
             use_maml=use_maml,
             step_size=meta_step_size,
-            plot=False,
+           # plot=False,
+            plot=True,
         )
         run_experiment_lite(
             algo.train(),
@@ -58,5 +59,6 @@ for fast_learning_rate in fast_learning_rates:
             seed=1,
             exp_prefix='trpo_maml_4state',
             exp_name='trpo_maml'+str(int(use_maml))+'_fbs'+str(fast_batch_size)+'_mbs'+str(meta_batch_size)+'_flr_' + str(fast_learning_rate) + 'metalr_' + str(meta_step_size) +'_step1'+str(num_grad_updates),
-            plot=False,
+            #plot=False,
+            plot=True,
         )

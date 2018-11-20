@@ -15,7 +15,7 @@ import tensorflow as tf
 
 stub(globals())
 
-
+from rllab.misc.instrument import VariantGenerator, variant
 
 class VG(VariantGenerator):
 
@@ -69,10 +69,10 @@ for v in variants:
         baseline=baseline,
         batch_size=max_path_length*100, # number of trajs for grad update
         max_path_length=max_path_length,
-        n_itr=1000,
+        n_itr=40,
         use_maml=use_maml,
         step_size=0.01,
-        plot=False,
+        plot=True,
     )
 
     if oracle:
@@ -82,7 +82,7 @@ for v in variants:
     if direc:
         exp_prefix = 'trpo_maml_cheetahdirec' + str(max_path_length)
     else:
-        exp_prefix = 'bugfix_trpo_maml_cheetah' + str(max_path_length)
+        exp_prefix = 'trpo_maml_cheetah' + str(max_path_length)
 
     run_experiment_lite(
         algo.train(),
@@ -100,6 +100,6 @@ for v in variants:
         mode="local",
         #mode="ec2",
         variant=v,
-        # plot=True,
+        plot=True,
         # terminate_machine=False,
     )

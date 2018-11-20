@@ -20,6 +20,8 @@ class BatchMAMLPolopt(RLAlgorithm):
     """
     Base class for batch sampling-based policy optimization methods, with maml.
     This includes various policy gradient methods like vpg, npg, ppo, trpo, etc.
+    基于批量采样的策略优化方法的基类，带有maml。
+     这包括各种政策梯度方法，如vpg，npg，ppo，trpo等。
     """
 
     def __init__(
@@ -30,15 +32,16 @@ class BatchMAMLPolopt(RLAlgorithm):
             scope=None,
             n_itr=500,
             start_itr=0,
-            # Note that the number of trajectories for grad upate = batch_size
-            # Defaults are 10 trajectories of length 500 for gradient update
+            # 请注意，grad upate的轨迹数 = batch_size
+            #默认值为10个轨迹，长度为500，用于梯度更新
+
             batch_size=100,
             max_path_length=500,
             meta_batch_size = 100,
             num_grad_updates=1,
             discount=0.99,
             gae_lambda=1,
-            plot=False,
+            plot=True,
             pause_for_plot=False,
             center_adv=True,
             positive_adv=False,
@@ -61,15 +64,15 @@ class BatchMAMLPolopt(RLAlgorithm):
         simultaneously, each using different environments and policies
         :param n_itr: Number of iterations.
         :param start_itr: Starting iteration.
-        :param batch_size: Number of samples per iteration.  #
-        :param max_path_length: Maximum length of a single rollout.
-        :param meta_batch_size: Number of tasks sampled per meta-update
-        :param num_grad_updates: Number of fast gradient updates
+        :param batch_size: Number of samples per iteration.  #每次迭代的样本数
+        :param max_path_length: 单个卷展栏rollout的最大长度
+        :param meta_batch_size: 每次元更新采样的任务数
+        :param num_grad_updates: Number of fast gradient updates快速渐变更新的数量
         :param discount: Discount.
-        :param gae_lambda: Lambda used for generalized advantage estimation.
+        :param gae_lambda: Lambda used for generalized advantage estimation.Lambda用于广义优势估计。
         :param plot: Plot evaluation run after each iteration.
         :param pause_for_plot: Whether to pause before contiuing when plotting.
-        :param center_adv: Whether to rescale the advantages so that they have mean 0 and standard deviation 1.
+        :param center_adv: Whether to rescale the advantages so that they have mean 0 and standard deviation 1.是否重新调整优势，使它们具有均值0和标准差1。
         :param positive_adv: Whether to shift the advantages so that they are always positive. When used in
         conjunction with center_adv the advantages will be standardized before shifting.
         :param store_paths: Whether to save all paths data to the snapshot.
@@ -82,8 +85,8 @@ class BatchMAMLPolopt(RLAlgorithm):
         self.scope = scope
         self.n_itr = n_itr
         self.start_itr = start_itr
-        # batch_size is the number of trajectories for one fast grad update.
-        # self.batch_size is the number of total transitions to collect.
+        # batch_size是一次快速梯度更新的轨迹数
+        # self.batch_size 是要收集的总转换数transitions
         self.batch_size = batch_size * max_path_length * meta_batch_size
         self.max_path_length = max_path_length
         self.discount = discount
@@ -95,8 +98,8 @@ class BatchMAMLPolopt(RLAlgorithm):
         self.store_paths = store_paths
         self.whole_paths = whole_paths
         self.fixed_horizon = fixed_horizon
-        self.meta_batch_size = meta_batch_size # number of tasks
-        self.num_grad_updates = num_grad_updates # number of gradient steps during training
+        self.meta_batch_size = meta_batch_size  # 任务数量
+        self.num_grad_updates = num_grad_updates # 训练期间的梯度步数gradient steps
 
         if sampler_cls is None:
             if singleton_pool.n_parallel > 1:
@@ -117,9 +120,9 @@ class BatchMAMLPolopt(RLAlgorithm):
         self.sampler.shutdown_worker()
 
     def obtain_samples(self, itr, reset_args=None, log_prefix=''):
-        # This obtains samples using self.policy, and calling policy.get_actions(obses)
+        # 这使用self.policy获取样本，并调用policy.get_actions（obses）
         # return_dict specifies how the samples should be returned (dict separates samples
-        # by task)
+        # by task)return_dict指定应如何返回样本（dict按任务分隔样本）
         paths = self.sampler.obtain_samples(itr, reset_args, return_dict=True, log_prefix=log_prefix)
         assert type(paths) == dict
         return paths
@@ -132,12 +135,12 @@ class BatchMAMLPolopt(RLAlgorithm):
         flatten_list = lambda l: [item for sublist in l for item in sublist]
 
         with tf.Session() as sess:
-            # Code for loading a previous policy. Somewhat hacky because needs to be in sess.
+            # Code for loading a previous policy. Somewhat hacky because needs to be in sess.用于加载先前策略的代码。
             if self.load_policy is not None:
                 import joblib
                 self.policy = joblib.load(self.load_policy)['policy']
             self.init_opt()
-            # initialize uninitialized vars  (only initialize vars that were not loaded)
+            # initialize uninitialized vars  (only initialize vars that were not loaded)（仅初始化未加载的vars）
             uninit_vars = []
             for var in tf.global_variables():
                 # note - this is hacky, may be better way to do this in newer TF.
@@ -152,22 +155,23 @@ class BatchMAMLPolopt(RLAlgorithm):
             for itr in range(self.start_itr, self.n_itr):
                 itr_start_time = time.time()
                 with logger.prefix('itr #%d | ' % itr):
-                    logger.log("Sampling set of tasks/goals for this meta-batch...")
+                    logger.log("Sampling set of tasks/goals for this meta-batch...") #为这个元批量抽样设置任务/目标
 
                     env = self.env
                     while 'sample_goals' not in dir(env):
                         env = env.wrapped_env
                     learner_env_goals = env.sample_goals(self.meta_batch_size)
 
-                    self.policy.switch_to_init_dist()  # Switch to pre-update policy
+                    self.policy.switch_to_init_dist()  # Switch to pre-update policy切换到更新前的策略
 
                     all_samples_data, all_paths = [], []
                     for step in range(self.num_grad_updates+1):
                         #if step > 0:
-                        #    import pdb; pdb.set_trace() # test param_vals functions.
-                        logger.log('** Step ' + str(step) + ' **')
-                        logger.log("Obtaining samples...")
-                        paths = self.obtain_samples(itr, reset_args=learner_env_goals, log_prefix=str(step))
+                           #import pdb; pdb.set_trace() # test param_vals functions.
+                        logger.log('** Step ' + str(step) + ' **')   #**Step 1**
+                        logger.log("Obtaining samples...")     # Obtaining samples...
+                        paths = self.obtain_samples(itr, reset_args=learner_env_goals, log_prefix=str(step))# Obtaining samples for iteration 0...
+
                         all_paths.append(paths)
                         logger.log("Processing samples...")
                         samples_data = {}
@@ -175,9 +179,9 @@ class BatchMAMLPolopt(RLAlgorithm):
                             # don't log because this will spam the consol with every task.
                             samples_data[key] = self.process_samples(itr, paths[key], log=False)
                         all_samples_data.append(samples_data)
-                        # for logging purposes only
+                        # for logging purposes only仅用于记录目的
                         self.process_samples(itr, flatten_list(paths.values()), prefix=str(step), log=True)
-                        logger.log("Logging diagnostics...")
+                        logger.log("Logging diagnostics...") #记录诊断
                         self.log_diagnostics(flatten_list(paths.values()), prefix=str(step))
                         if step < self.num_grad_updates:
                             logger.log("Computing policy updates...")
@@ -186,6 +190,7 @@ class BatchMAMLPolopt(RLAlgorithm):
 
                     logger.log("Optimizing policy...")
                     # This needs to take all samples_data so that it can construct graph for meta-optimization.
+                    # 这需要获取所有samples_data，以便它可以构建用于元优化的图形。
                     self.optimize_policy(itr, all_samples_data)
                     logger.log("Saving snapshot...")
                     params = self.get_itr_snapshot(itr, all_samples_data[-1])  # , **kwargs)
@@ -198,8 +203,8 @@ class BatchMAMLPolopt(RLAlgorithm):
 
                     logger.dump_tabular(with_prefix=False)
 
-                    # The rest is some example plotting code.
-                    # Plotting code is useful for visualizing trajectories across a few different tasks.
+                    # The rest is some example plotting code.其余的是绘制代码的一些示例。
+                    # Plotting code is useful for visualizing trajectories across a few different tasks.绘制代码对于在几个不同任务中可视化轨迹非常有用。
                     if False and itr % 2 == 0 and self.env.observation_space.shape[0] <= 4: # point-mass
                         logger.log("Saving visualization of paths")
                         for ind in range(min(5, self.meta_batch_size)):
@@ -260,13 +265,14 @@ class BatchMAMLPolopt(RLAlgorithm):
         """
         Initialize the optimization procedure. If using tensorflow, this may
         include declaring all the variables and compiling functions
+        初始化优化过程。 如果使用tensorflow，这可能包括声明所有变量和编译函数
         """
         raise NotImplementedError
 
     def get_itr_snapshot(self, itr, samples_data):
         """
         Returns all the data that should be saved in the snapshot for this
-        iteration.
+        iteration.返回应在此次迭代的快照中保存的所有数据。
         """
         raise NotImplementedError
 

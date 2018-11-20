@@ -33,19 +33,18 @@ algo = TRPO(
     n_itr=100,
     discount=0.99,
     step_size=0.01,
-    #plot=True,
+    plot=True,
 )
-
+#import pdb; pdb.set_trace()
 run_experiment_lite(
     algo.train(),
     # Number of parallel workers for sampling
     n_parallel=4,
-    # Only keep the snapshot parameters for the last iteration
+    # 只保留上次迭代的快照参数。
     snapshot_mode="last",
-    # Specifies the seed for the experiment. If this is not provided, a random seed
-    # will be used
+    # 指定实验的种子。如果没有提供，则将使用随机种子。
     seed=1,
     exp_prefix='trpo_maml_point100',
     exp_name='oracleenv2',
-    #plot=True,
+    plot=True,
 )

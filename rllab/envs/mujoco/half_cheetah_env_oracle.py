@@ -10,7 +10,7 @@ from rllab.misc.overrides import overrides
 def smooth_abs(x, param):
     return np.sqrt(np.square(x) + np.square(param)) - param
 
-
+#goal velocity
 class HalfCheetahEnvOracle(MujocoEnv, Serializable):
 
     FILE = 'half_cheetah.xml'

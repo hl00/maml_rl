@@ -292,7 +292,7 @@ def stub(glbs):
     # replace the __init__ method in all classes
     # hacky!!!
     for k, v in list(glbs.items()):
-        # look at all variables that are instances of a class (not yet Stub)
+        # look at all variables that are instances of a class (not yet Stub)查看作为类实例的所有变量（还没有Stub）
         if isinstance(v, type) and v != StubClass:
             glbs[k] = StubClass(v)  # and replaces them by a the same but Stub
 
@@ -362,24 +362,25 @@ def run_experiment_lite(
         **kwargs):
     """
     Serialize the stubbed method call and run the experiment using the specified mode.
+    序列化存根方法调用并使用指定的模式运行实验。
     :param stub_method_call: A stubbed method call.
     :param script: The name of the entrance point python script
     :param mode: Where & how to run the experiment. Should be one of "local", "local_docker", "ec2",
     and "lab_kube".
     :param dry: Whether to do a dry-run, which only prints the commands without executing them.
-    :param exp_prefix: Name prefix for the experiments
+    :param exp_prefix: Name prefix for the experiments实验的名称前缀
     :param docker_image: name of the docker image. Ignored if using local mode.
     :param aws_config: configuration for AWS. Only used under EC2 mode
-    :param env: extra environment variables
-    :param kwargs: All other parameters will be passed directly to the entrance python script.
-    :param variant: If provided, should be a dictionary of parameters
+    :param env: extra environment variables额外的环境变量
+    :param kwargs: All other parameters will be passed directly to the entrance python script.所有其他参数将直接传递给入口python脚本
+    :param variant: If provided, should be a dictionary of parameters如果提供，应该是参数字典
     :param use_gpu: Whether the launched task is running on GPU. This triggers a few configuration changes including
     certain environment flags
     :param sync_s3_pkl: Whether to sync pkl files during execution of the experiment (they will always be synced at
-    the end of the experiment)
+    the end of the experiment)是否在执行实验期间同步pkl文件（它们将始终在实验结束时同步）
     :param confirm_remote: Whether to confirm before launching experiments remotely
     :param terminate_machine: Whether to terminate machine after experiment finishes. Only used when using
-    mode="ec2". This is useful when one wants to debug after an experiment finishes abnormally.
+    mode="ec2". This is useful when one wants to debug after an experiment finishes abnormally.是否在实验结束后终止机器。 仅在使用时使用模式= “EC2”。 当在实验异常完成后想要调试时，这很有用。
     :param periodic_sync: Whether to synchronize certain experiment files periodically during execution.
     :param periodic_sync_interval: Time interval between each periodic sync, in seconds.
     """

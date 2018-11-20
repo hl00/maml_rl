@@ -120,6 +120,7 @@ class ConjugateGradientOptimizer(Serializable):
     Performs constrained optimization via line search. The search direction is computed using a conjugate gradient
     algorithm, which gives x = A^{-1}g, where A is a second order approximation of the constraint and g is the gradient
     of the loss function.
+    通过线搜索执行约束优化。 使用共轭梯度算法计算搜索方向，得到x = A ^ { - 1} g，其中A是约束的二阶近似，g是损失函数的梯度
     """
 
     def __init__(

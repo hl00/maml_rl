@@ -10,7 +10,7 @@ from sandbox.rocky.tf.samplers.vectorized_sampler import VectorizedSampler
 
 class BatchPolopt(RLAlgorithm):
     """
-    Base class for batch sampling-based policy optimization methods.
+    Base class for batch sampling-based policy optimization methods.基于批量采样的策略优化方法的基类。
     This includes various policy gradient methods like vpg, npg, ppo, trpo, etc.
     """
 
@@ -111,7 +111,7 @@ class BatchPolopt(RLAlgorithm):
             self.init_opt()
             # initialize uninitialized vars (I know, it's ugly)
             uninit_vars = []
-            for var in tf.all_variables():
+            for var in tf.global_variables():
                 try:
                     sess.run(var)
                 except tf.errors.FailedPreconditionError:

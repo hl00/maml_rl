@@ -3,7 +3,7 @@ from sandbox.rocky.tf.algos.vpg import VPG
 from rllab.baselines.linear_feature_baseline import LinearFeatureBaseline
 from rllab.baselines.zero_baseline import ZeroBaseline
 from examples.point_env import PointEnv
-from examples.point_env_randgoal import PointEnvRandGoal
+from maml_examples.point_env_randgoal import PointEnvRandGoal
 from rllab.envs.normalized_env import normalize
 from rllab.misc.instrument import stub, run_experiment_lite
 #from rllab.policies.gaussian_mlp_policy import GaussianMLPPolicy
@@ -28,7 +28,7 @@ algo = VPG(
     #batch_size=20,
     max_path_length=5,
     n_itr=100,
-    #plot=True,
+    plot=True,
 )
 run_experiment_lite(
     algo.train(),
@@ -37,5 +37,5 @@ run_experiment_lite(
     seed=1,
     exp_prefix='deleteme',
     exp_name='deleteme',
-    #plot=True,
+    plot=True,
 )

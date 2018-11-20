@@ -86,10 +86,11 @@ for v in variants:
         baseline=baseline,
         batch_size=max_path_length*100, # number of trajs for grad update
         max_path_length=max_path_length,
-        n_itr=2000,
+        n_itr=40,
         use_maml=use_maml,
         step_size=0.01,
-        plot=False,
+        #plot=True,
+
     )
 
     if oracle:

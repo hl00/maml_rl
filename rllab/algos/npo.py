@@ -9,7 +9,7 @@ from rllab.optimizers.penalty_lbfgs_optimizer import PenaltyLbfgsOptimizer
 
 class NPO(BatchPolopt):
     """
-    Natural Policy Optimization.
+    Natural Policy Optimization.自然政策优化
     """
 
     def __init__(

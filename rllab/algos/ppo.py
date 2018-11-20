@@ -5,7 +5,7 @@ from rllab.core.serializable import Serializable
 
 class PPO(NPO, Serializable):
     """
-    Penalized Policy Optimization.
+    Penalized Policy Optimization.惩罚政策优化
     """
 
     def __init__(

@@ -18,12 +18,12 @@ import tensorflow as tf
 
 stub(globals())
 
-file1 = 'data/s3/bugfix-trpo-maml-antdirec200/maml1_fbs40_mbs40_flr_0.1_mlr0.01/itr_575.pkl'
-file2 = 'data/s3/bugfix-trpo-maml-antdirec200/randenv100traj/params.pkl'
-file3 = 'data/s3/bugfix-trpo-maml-antdirec200/oracleenv100traj/itr_1975.pkl'
+file1 = 'data/local/posticml-trpo-maml-antdirec-100/maml1_fbs20_mbs40_flr_0.1_mlr0.01/itr_25.pkl'
+file2 = 'data/local/posticml-trpo-maml-antdirec-100/randenv100traj/params.pkl'
+file3 = 'data/local/posticml-trpo-maml-antdirec-100/oracleenv100traj/itr_1975.pkl'
 make_video = True # generate results if False, run code to make video if True
 # for making the video (need random initial file to start from)
-rand_file = 'data/s3/bugfix-trpo-maml-antdirec200/maml1_fbs10_mbs20_flr_1.0_mlr0.01/itr_0.pkl'
+rand_file = 'data/local/posticml-trpo-maml-antdirec-100/maml1_fbs20_mbs40_flr_0.1_mlr0.01/itr_0.pkl'
 
 run_id = 1  # for if you want to run this script in multiple terminals (need to have different ids)
 

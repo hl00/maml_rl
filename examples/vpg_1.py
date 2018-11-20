@@ -51,6 +51,8 @@ dist_info_vars = policy.dist_info_sym(observations_var)
 dist = policy.distribution
 
 # #请注意，我们否定目标，因为大多数优化器假设最小化问题。
+
+# 请注意，我们否定目标，因为大多数优化器假设最小化问题。
 surr = - TT.mean(dist.log_likelihood_sym(actions_var, dist_info_vars) * returns_var)
 
 # 获取可训练参数的列表

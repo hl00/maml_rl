@@ -8,6 +8,7 @@ class Env(object):
         """
         Run one timestep of the environment's dynamics. When end of episode
         is reached, reset() should be called to reset the environment's internal state.
+        运行一次环境动态。 到达episode结束时，应调用reset（）以重置环境的内部状态。
         Input
         -----
         action : an action provided by the environment

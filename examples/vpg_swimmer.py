@@ -39,7 +39,7 @@ algo = VPG(
     batch_size=500*batch_size,
     max_path_length=500,
     n_itr=500,
-    #plot=True,
+    plot=True,
     optimizer_args={'tf_optimizer_args':{'learning_rate': 1e-3}},
 )
 run_experiment_lite(
@@ -50,5 +50,5 @@ run_experiment_lite(
     exp_prefix='vpgswimmer',
     #exp_name='basic',
     exp_name='randomenv',
-    #plot=True,
+    plot=True,
 )

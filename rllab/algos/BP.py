@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 from rllab.algos.base import RLAlgorithm
 from rllab.sampler import parallel_sampler
 from rllab.sampler.base import BaseSampler
@@ -5,6 +16,8 @@ import rllab.misc.logger as logger
 import rllab.plotter as plotter
 from rllab.policies.base import Policy
 
+import tensorflow as tf
+import time
 
 class BatchSampler(BaseSampler):
     def __init__(self, algo):
@@ -105,38 +118,52 @@ class BatchPolopt(RLAlgorithm):
         if sampler_args is None:
             sampler_args = dict()
         self.sampler = sampler_cls(self, **sampler_args)
+        self.init_opt()
 
     def start_worker(self):
         self.sampler.start_worker()
         if self.plot:
+            plotter.init_worker()###
             plotter.init_plot(self.env, self.policy)
 
     def shutdown_worker(self):
         self.sampler.shutdown_worker()
 
+    def obtain_samples(self, itr):##
+        return self.sampler.obtain_samples(itr)
+
+    def process_samples(self, itr, paths):
+        return self.sampler.process_samples(itr, paths)
+
     def train(self):
-        self.start_worker()
-        self.init_opt()
-        for itr in range(self.current_itr, self.n_itr):
-            with logger.prefix('itr #%d | ' % itr):
-                paths = self.sampler.obtain_samples(itr)
-                samples_data = self.sampler.process_samples(itr, paths)
-                self.log_diagnostics(paths)
-                self.optimize_policy(itr, samples_data)
-                logger.log("saving snapshot...")
-                params = self.get_itr_snapshot(itr, samples_data)
-                self.current_itr = itr + 1
-                params["algo"] = self
-                if self.store_paths:
-                    params["paths"] = samples_data["paths"]
-                logger.save_itr_params(itr, params)
-                logger.log("saved")
-                logger.dump_tabular(with_prefix=False)
-                if self.plot:
-                    self.update_plot()
-                    if self.pause_for_plot:
-                        input("Plotting evaluation run: Press Enter to "
-                                  "continue...")
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            start_time = time.time()
+            self.start_worker()
+
+            for itr in range(self.start_itr, self.n_itr):
+                itr_start_time = time.time()
+                with logger.prefix('itr #%d | ' % itr):
+                    paths = self.sampler.obtain_samples(itr)
+                    samples_data = self.sampler.process_samples(itr, paths)
+                    self.log_diagnostics(paths)
+                    self.optimize_policy(itr, samples_data)
+                    logger.log("saving snapshot...")
+                    params = self.get_itr_snapshot(itr, samples_data)
+                    #self.current_itr = itr + 1
+                    #params["algo"] = self
+                    if self.store_paths:
+                        params["paths"] = samples_data["paths"]
+                    logger.save_itr_params(itr, params)
+                    logger.log("saved")
+                    logger.record_tabular('Time', time.time() - start_time)
+                    logger.record_tabular('ItrTime', time.time() - itr_start_time)
+                    logger.dump_tabular(with_prefix=False)
+                    if self.plot:
+                        self.update_plot()
+                        if self.pause_for_plot:
+                            input("Plotting evaluation run: Press Enter to "
+                                      "continue...")
 
         self.shutdown_worker()
 
@@ -165,5 +192,3 @@ class BatchPolopt(RLAlgorithm):
     def update_plot(self):
         if self.plot:
             plotter.update_plot(self.policy, self.max_path_length)
-
-

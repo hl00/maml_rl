@@ -18,10 +18,11 @@ import tensorflow as tf
 stub(globals())
 
 # horizon of 100
-initial_params_file1 = 'data/local/vpg-maml-point100/trpomaml1_fbs20_mbs20_flr_0.5metalr_0.01_step11/params.pkl'
-initial_params_file2 = 'data/local/vpg-maml-point100/vpgrandenv/params.pkl'
-initial_params_file3 = 'data/local/vpg-maml-point100/maml0_fbs20_mbs20_flr_1.0metalr_0.01_step11/params.pkl'
-initial_params_file4 = 'data/local/vpg-maml-point100/oracleenv2/params.pkl'
+initial_params_file1 = 'data/local/vpg-maml-point100/trpomaml1_fbs20_mbs40_flr_0.5metalr_0.01_step11/params.pkl'
+#3333initial_params_file2 = 'data/local/vpg-maml-point100/vpgrandenv/params.pkl'
+
+#initial_params_file3 = 'data/local/vpg-maml-point100/maml0_fbs20_mbs40_flr_1.0metalr_0.01_step11/params.pkl'
+#initial_params_file4 = 'data/local/vpg-maml-point100/oracleenv2/params.pkl'
 
 test_num_goals = 40
 np.random.seed(1)
@@ -32,10 +33,12 @@ goals = [goals[6]]
 
 
 # ICML values
-step_sizes = [0.5, 0.5, 0.5,0.0, 0.5]
-initial_params_files = [initial_params_file1, initial_params_file3, None,initial_params_file4]
+step_sizes = [0.5, 0.5, 0.5, 0.0]
+#initial_params_files = [initial_params_file1, initial_params_file3, None,initial_params_file4]
+initial_params_files = [initial_params_file1]
 gen_name = 'icml_point_results_'
-names = ['maml','maml0','random','oracle']
+#names = ['maml','maml0','random','oracle']
+names = ['maml']
 
 exp_names = [gen_name + name for name in names]
 
@@ -89,9 +92,9 @@ for step_i, initial_params_file in zip(range(len(step_sizes)), initial_params_fi
             exp_name='test',
             #plot=True,
         )
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         # get return from the experiment
-        with open('data/local/trpopoint2d-test/test/progress.csv', 'r') as f:
+        with open('data/local/trpopoint2d-test/test/progress.csv', 'rb') as f:
             reader = csv.reader(f, delimiter=',')
             i = 0
             row = None
@@ -117,8 +120,9 @@ for i in range(len(initial_params_files)):
         task_avg_returns.append([ret[itr] for ret in all_avg_returns[i]])
 
     results = {'task_avg_returns': task_avg_returns}
-    with open(exp_names[i] + '.pkl', 'w') as f:
+
+    with open(exp_names[i] + '.pkl', 'wb') as f:
         pickle.dump(results, f)
 
-import pdb; pdb.set_trace()
+#import pdb; pdb.set_trace()
 

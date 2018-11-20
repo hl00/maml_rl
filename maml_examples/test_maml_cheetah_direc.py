@@ -18,15 +18,15 @@ import tensorflow as tf
 stub(globals())
 
 # original ICML file:
-file1 = 'data/s3/bugfix-trpo-maml-cheetahdirec200/maml1_fbs20_mbs40_flr_0.1_mlr0.02/itr_100.pkl'
-file2 = 'data/s3/bugfix-trpo-maml-cheetahdirec200/randenv/params.pkl'
+file1 = 'data/local/trpo-maml-cheetahdirec200/maml1_fbs20_mbs40_flr_0.1_mlr0.02/itr_100.pkl'
+file2 = 'data/local/trpo-maml-cheetahdirec200/randenv/params.pkl'
 file3 = 'data/local/trpo-maml-cheetahdirec200/oracleenv/params.pkl'
 
 # for making the video, need a randomly initialized policy to load.
 rand_file = 'data/s3/bugfix-trpo-maml-cheetahdirec200/maml1_fbs10_mbs20_flr_0.1_mlr0.01/itr_0.pkl'
 
 make_video = True # generate results if False, run code to make video if True
-run_id = 1  # for if you want to run this script in multiple terminals (need to have different ids)
+run_id = 2  # for if you want to run this script in multiple terminals (need to have different ids)
 
 if not make_video:
     test_num_goals = 40

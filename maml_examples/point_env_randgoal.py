@@ -5,7 +5,7 @@ import numpy as np
 
 
 class PointEnvRandGoal(Env):
-    def __init__(self, goal=None):  # Can set goal to test adaptation.
+    def __init__(self, goal=None):  # 可以设定goal来测试适应性
         self._goal = goal
 
     @property
@@ -24,7 +24,7 @@ class PointEnvRandGoal(Env):
         if goal is not None:
             self._goal = goal
         elif self._goal is None:
-            # Only set a new goal if this env hasn't had one defined before.
+            # 如果此env之前没有定义过，则仅设置新goal。
             self._goal = np.random.uniform(-0.5, 0.5, size=(2,))
             #goals = [np.array([-0.5,0]), np.array([0.5,0])]
             #goals = np.array([[-0.5,0], [0.5,0],[0.2,0.2],[-0.2,-0.2],[0.5,0.5],[0,0.5],[0,-0.5],[-0.5,-0.5],[0.5,-0.5],[-0.5,0.5]])
